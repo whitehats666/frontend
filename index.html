@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Asquare Technologies — Data & Analytics Programs</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --rose:#8B0845;--pink:#C2185B;--bright:#E91E8C;
+  --pale:#FCE4EC;--lighter:#FFF0F5;--border:#F0C8D8;
+  --dark:#120610;--mid:#3D1028;--muted:#9B6070;
+  --white:#FFFFFF;--off:#FDF6FA;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--dark);overflow-x:hidden;}
+
+/* CURSOR */
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--pink);pointer-events:none;z-index:9999;transition:transform 0.15s ease;mix-blend-mode:multiply;}
+.cursor-ring{position:fixed;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--pink);pointer-events:none;z-index:9998;transition:opacity 0.3s;opacity:0.5;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--rose);z-index:9000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;transition:opacity 0.7s ease;}
+#loader.hide{opacity:0;pointer-events:none;}
+.loader-logo{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:white;letter-spacing:2px;opacity:0;animation:fadeUp 0.6s 0.2s ease forwards;}
+.loader-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);opacity:0;animation:fadeUp 0.6s 0.4s ease forwards;}
+.loader-bar{width:180px;height:1.5px;background:rgba(255,255,255,0.2);border-radius:2px;overflow:hidden;}
+.loader-fill{height:100%;background:white;border-radius:2px;animation:fill 1.5s ease forwards;}
+@keyframes fill{from{width:0}to{width:100%}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 5%;height:70px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s,border-color 0.4s;}
+nav.scrolled{background:rgba(253,246,250,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--rose),var(--bright));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:white;font-size:17px;font-weight:700;box-shadow:0 4px 16px rgba(194,24,91,0.4);transition:transform 0.3s;}
+.logo:hover .logo-mark{transform:rotate(-6deg) scale(1.05);}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--rose);display:block;line-height:1.1;}
+.logo-tag{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:30px;}
+.nav-links a{text-decoration:none;font-size:13px;font-weight:400;color:var(--mid);position:relative;transition:color 0.2s;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--pink);transition:width 0.3s;}
+.nav-links a:hover{color:var(--pink);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{background:var(--pink) !important;color:white !important;padding:10px 24px;border-radius:50px;font-weight:500 !important;box-shadow:0 4px 16px rgba(194,24,91,0.3);transition:transform 0.2s,box-shadow 0.2s;}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(194,24,91,0.4);}
+.nav-cta::after{display:none !important;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(155deg,var(--rose) 0%,#A0154F 40%,#CC1466 70%,var(--bright) 100%);padding:120px 5% 80px;}
+.mesh{position:absolute;inset:0;pointer-events:none;}
+.m{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.22;}
+.m1{width:550px;height:550px;background:rgba(255,255,255,0.14);top:-120px;right:-120px;animation:f1 9s ease-in-out infinite;}
+.m2{width:380px;height:380px;background:rgba(255,100,150,0.28);bottom:-100px;left:2%;animation:f2 11s ease-in-out infinite;}
+.m3{width:280px;height:280px;background:rgba(255,255,255,0.09);top:35%;left:35%;animation:f1 13s ease-in-out infinite reverse;}
+@keyframes f1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(18px,-28px) scale(1.04);}}
+@keyframes f2{0%,100%{transform:translate(0,0);}50%{transform:translate(-18px,18px);}}
+
+.hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.25);padding:6px 16px;border-radius:50px;margin-bottom:28px;animation:fadeUp 0.7s 0.3s ease both;}
+.blink{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.7);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:700;color:white;line-height:1.12;margin-bottom:22px;animation:fadeUp 0.7s 0.45s ease both;}
+.hero h1 em{font-style:italic;color:rgba(255,210,225,0.95);}
+.hero p{font-size:15px;color:rgba(255,255,255,0.78);line-height:1.75;max-width:460px;margin-bottom:38px;animation:fadeUp 0.7s 0.6s ease both;}
+.btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.7s 0.75s ease both;}
+.btn-w{background:white;color:var(--rose);padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 28px rgba(0,0,0,0.22);transition:transform 0.25s,box-shadow 0.25s;}
+.btn-w:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.28);}
+.btn-g{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.4);padding:13px 28px;border-radius:50px;font-size:14px;text-decoration:none;transition:border-color 0.2s,background 0.2s;}
+.btn-g:hover{border-color:white;background:rgba(255,255,255,0.1);}
+.hstats{display:flex;gap:0;margin-top:52px;animation:fadeUp 0.7s 0.9s ease both;}
+.hs{color:white;border-left:1px solid rgba(255,255,255,0.22);padding:0 24px;}
+.hs:first-child{border-left:none;padding-left:0;}
+.hs strong{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;display:block;line-height:1;}
+.hs span{font-size:10px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1.2px;margin-top:4px;display:block;}
+
+/* floating hero cards */
+.hcards{position:relative;height:420px;animation:fadeUp 0.8s 0.5s ease both;}
+.hcard{position:absolute;background:rgba(255,255,255,0.11);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:20px 22px;}
+.hc1{width:230px;top:0;right:0;animation:f1 7s ease-in-out infinite;}
+.hc2{width:210px;top:120px;left:0;animation:f2 9s ease-in-out infinite;}
+.hc3{width:240px;bottom:0;right:10px;animation:f1 11s ease-in-out infinite 2s;}
+.hc-eye{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:8px;}
+.hc-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:white;margin-bottom:10px;line-height:1.2;}
+.hc-stars{color:#FFB3CC;font-size:12px;margin-bottom:5px;}
+.hc-meta{font-size:11px;color:rgba(255,255,255,0.55);}
+.hc-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.hct{background:rgba(255,255,255,0.16);color:rgba(255,255,255,0.9);font-size:9px;padding:3px 9px;border-radius:50px;}
+
+/* TICKER */
+.ticker{background:var(--dark);padding:14px 0;overflow:hidden;}
+.t-track{display:flex;white-space:nowrap;animation:tick 28s linear infinite;}
+.t-track:hover{animation-play-state:paused;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.t-item{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:1.8px;text-transform:uppercase;padding:0 28px;display:inline-flex;align-items:center;gap:12px;}
+.t-item::after{content:'✦';color:var(--pink);font-size:9px;}
+
+/* SECTIONS */
+.wrap{max-width:1100px;margin:0 auto;padding:90px 5%;}
+.sec-head{text-align:center;margin-bottom:60px;}
+.sec-eye{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--pink);font-weight:500;margin-bottom:14px;display:block;}
+.sec-head h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:700;color:var(--dark);margin-bottom:14px;}
+.sec-head p{font-size:14px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;}
+.liner{width:50px;height:3px;background:linear-gradient(90deg,var(--pink),var(--bright));border-radius:2px;margin:20px auto 0;}
+
+/* CARDS */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+.card{background:white;border-radius:22px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;position:relative;transition:transform 0.35s cubic-bezier(.22,.68,0,1.2),box-shadow 0.35s,border-color 0.3s;}
+.card::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(194,24,91,0.035),transparent 55%);opacity:0;transition:opacity 0.35s;pointer-events:none;border-radius:22px;}
+.card:hover{transform:translateY(-10px) scale(1.012);box-shadow:0 30px 64px rgba(194,24,91,0.13);border-color:var(--pink);}
+.card:hover::after{opacity:1;}
+
+.ch{height:168px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.ch1{background:linear-gradient(135deg,#5D062A,#C2185B,#E91E8C);}
+.ch2{background:linear-gradient(135deg,#7B0D40,#D81B60,#F06292);}
+.ch3{background:linear-gradient(135deg,#3D0068,#7B0D40,#C2185B);}
+.ch-pattern{position:absolute;inset:0;opacity:0.12;background-image:radial-gradient(circle,rgba(255,255,255,0.55) 1px,transparent 1px);background-size:22px 22px;}
+.ch-glow{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.1);filter:blur(28px);transition:transform 0.4s;}
+.card:hover .ch-glow{transform:scale(1.4);}
+.ch-icon{position:relative;z-index:2;width:66px;height:66px;border-radius:18px;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.25);transition:transform 0.35s cubic-bezier(.22,.68,0,1.2);}
+.card:hover .ch-icon{transform:scale(1.12) rotate(-4deg);}
+.ch-badge{position:absolute;top:14px;right:14px;z-index:3;background:rgba(255,255,255,0.16);color:white;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:50px;border:1px solid rgba(255,255,255,0.28);backdrop-filter:blur(6px);}
+
+.cb{padding:22px;flex:1;display:flex;flex-direction:column;}
+.ctags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.ctag{background:var(--pale);color:var(--rose);font-size:9px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:50px;}
+.c-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--dark);line-height:1.25;margin-bottom:9px;}
+.c-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px;flex:1;}
+.c-rating{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+.stars{color:var(--bright);font-size:12px;}
+.rv{font-size:13px;font-weight:600;color:var(--dark);}
+.rc{font-size:11px;color:var(--muted);}
+.access-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lighter);color:var(--rose);font-size:11px;font-weight:600;padding:6px 14px;border-radius:50px;border:1px solid var(--border);margin-bottom:14px;}
+.access-tag svg{width:12px;height:12px;}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:6px;border-top:1px solid var(--lighter);padding-top:14px;margin-bottom:18px;}
+.f{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mid);}
+.fd{width:5px;height:5px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--bright));flex-shrink:0;}
+.enroll{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,var(--pink),var(--bright));color:white;padding:13px;border-radius:50px;font-size:13px;font-weight:600;text-decoration:none;border:none;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+.enroll::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);transition:left 0.55s;}
+.enroll:hover{transform:scale(1.025);box-shadow:0 10px 30px rgba(194,24,91,0.35);}
+.enroll:hover::before{left:100%;}
+.arr{transition:transform 0.2s;display:inline-block;}
+.enroll:hover .arr{transform:translateX(5px);}
+
+/* LEARN */
+.learn-wrap{background:white;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--border);}
+.lc{background:white;padding:48px 38px;transition:background 0.2s;}
+.lc:hover{background:var(--lighter);}
+.l-eye{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);margin-bottom:12px;display:block;}
+.lc h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--dark);margin-bottom:8px;}
+.lc p{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:22px;}
+.ll{list-style:none;}
+.ll li{font-size:13px;color:var(--mid);padding:8px 0;border-bottom:1px solid var(--lighter);display:flex;align-items:center;gap:10px;}
+.ll li::before{content:'';width:20px;height:20px;border-radius:50%;background:var(--pale);background-image:url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4l2.5 2.5L9 1' stroke='%23C2185B' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;flex-shrink:0;}
+
+/* AUDIENCE */
+.aud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.ac{background:white;border:1px solid var(--border);border-radius:18px;padding:28px 20px;text-align:center;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;}
+.ac:hover{transform:translateY(-6px);border-color:var(--pink);box-shadow:0 18px 44px rgba(194,24,91,0.1);}
+.ai{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--pale),#FFEEF5);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:1px solid var(--border);transition:transform 0.3s;}
+.ac:hover .ai{transform:scale(1.1) rotate(-5deg);}
+.ac h4{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--dark);margin-bottom:7px;}
+.ac p{font-size:12px;color:var(--muted);line-height:1.55;}
+
+/* CTA */
+.cta{position:relative;overflow:hidden;background:linear-gradient(155deg,var(--rose) 0%,#A50F4A 40%,var(--bright) 100%);padding:100px 5%;text-align:center;}
+.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(255,255,255,0.07),transparent 60%);}
+.cta-in{position:relative;z-index:2;}
+.cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4.5vw,52px);font-weight:700;color:white;margin-bottom:16px;}
+.cta p{font-size:15px;color:rgba(255,255,255,0.75);max-width:460px;margin:0 auto 32px;line-height:1.7;}
+.cpills{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:36px;}
+.cp{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);color:white;font-size:11px;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.2);}
+.cpd{width:5px;height:5px;border-radius:50%;background:rgba(255,200,220,0.9);}
+
+/* FOOTER */
+footer{background:var(--dark);padding:44px 5% 28px;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.fb{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:white;}
+.fc{font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;}
+.fl{display:flex;gap:24px;}
+.fl a{font-size:12px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
+.fl a:hover{color:var(--pink);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.d1{transition-delay:0.1s;}.d2{transition-delay:0.22s;}.d3{transition-delay:0.34s;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-inner,.grid3,.learn-grid,.aud-grid{grid-template-columns:1fr;}
+  .hcards{display:none;}
+  .nav-links a:not(.nav-cta){display:none;}
+  .aud-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Asquare Technologies</div>
+  <div class="loader-tag">Learning Platform</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <div class="logo-mark">Aq</div>
+    <div>
+      <span class="logo-name">Asquare Technologies</span>
+      <span class="logo-tag">Learning Platform</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#courses">Programs</a>
+    <a href="#learn">Curriculum</a>
+    <a href="#audience">Who It's For</a>
+    <a href="#courses" class="nav-cta">Enroll Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="mesh">
+    <div class="m m1"></div><div class="m m2"></div><div class="m m3"></div>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="blink"></span>Asquare Technologies · 2026</div>
+      <h1>Turn Data Into Your<br><em>Greatest Advantage</em></h1>
+      <p>Industry-aligned master programs built for real-world impact. From Excel to AI — complete the journey with 1 full year of access.</p>
+      <div class="btns">
+        <a href="#courses" class="btn-w">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Explore Programs
+        </a>
+        <a href="#learn" class="btn-g">View Curriculum</a>
+      </div>
+      <div class="hstats">
+        <div class="hs"><strong>13K+</strong><span>Learners</span></div>
+        <div class="hs"><strong>3</strong><span>Programs</span></div>
+        <div class="hs"><strong>4.6 ★</strong><span>Rating</span></div>
+        <div class="hs"><strong>1 Year</strong><span>Access</span></div>
+      </div>
+    </div>
+    <div class="hcards">
+      <div class="hcard hc1">
+        <div class="hc-eye">Master Program</div>
+        <div class="hc-title">Data Analytics</div>
+        <div class="hc-stars">★★★★★</div>
+        <div class="hc-meta">4.6 · 2,000+ learners</div>
+        <div class="hc-tags"><span class="hct">Excel</span><span class="hct">SQL</span><span class="hct">Python</span></div>
+      </div>
+      <div class="hcard hc2">
+        <div class="hc-eye">Master Program</div>
+        <div class="hc-title">Business Analytics</div>
+        <div class="hc-stars">★★★★½</div>
+        <div class="hc-meta">4.5 · 5,000+ learners</div>
+        <div class="hc-tags"><span class="hct">Power BI</span><span class="hct">KPIs</span></div>
+      </div>
+      <div class="hcard hc3">
+        <div class="hc-eye">Master Program</div>
+        <div class="hc-title">Data Science & AI</div>
+        <div class="hc-stars">★★★★★</div>
+        <div class="hc-meta">4.7 · 6,000+ learners</div>
+        <div class="hc-tags"><span class="hct">ML</span><span class="hct">AI</span><span class="hct">Python</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="t-track">
+    <span class="t-item">Data Analytics</span><span class="t-item">Machine Learning</span><span class="t-item">Business Intelligence</span><span class="t-item">Python &amp; SQL</span><span class="t-item">Power BI</span><span class="t-item">AI &amp; Deep Learning</span><span class="t-item">Real Projects</span><span class="t-item">1 Year Access</span><span class="t-item">Certificate</span><span class="t-item">Asquare Technologies</span>
+    <span class="t-item">Data Analytics</span><span class="t-item">Machine Learning</span><span class="t-item">Business Intelligence</span><span class="t-item">Python &amp; SQL</span><span class="t-item">Power BI</span><span class="t-item">AI &amp; Deep Learning</span><span class="t-item">Real Projects</span><span class="t-item">1 Year Access</span><span class="t-item">Certificate</span><span class="t-item">Asquare Technologies</span>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div id="courses" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-eye">Our Programs</span>
+    <h2>Three Paths to Mastery</h2>
+    <p>All programs include certificates, real-world projects, and 1 full year of course access.</p>
+    <div class="liner"></div>
+  </div>
+  <div class="grid3">
+
+    <div class="card reveal d1">
+      <div class="ch ch1">
+        <div class="ch-pattern"></div><div class="ch-glow"></div>
+        <div class="ch-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="5" width="18" height="23" rx="2.5" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+            <rect x="7.5" y="9.5" width="11" height="1.5" rx=".75" fill="rgba(255,255,255,0.75)"/>
+            <rect x="7.5" y="13" width="8" height="1.2" rx=".6" fill="rgba(255,255,255,0.5)"/>
+            <rect x="7.5" y="16.5" width="10" height="1.2" rx=".6" fill="rgba(255,255,255,0.5)"/>
+            <rect x="7.5" y="20" width="6" height="1.2" rx=".6" fill="rgba(255,255,255,0.35)"/>
+            <circle cx="24" cy="24" r="7" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.45)" stroke-width="1"/>
+            <polyline points="21,24 23.5,26.5 27,21" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ch-badge">Bestseller</span>
+      </div>
+      <div class="cb">
+        <div class="ctags"><span class="ctag">Excel</span><span class="ctag">SQL</span><span class="ctag">Python</span><span class="ctag">Power BI</span></div>
+        <h3 class="c-title">Data Analytics Master Program</h3>
+        <p class="c-desc">Turn raw data into powerful insights. Master the tools top companies use — from cleaning and SQL to Python and visualization.</p>
+        <div class="c-rating"><span class="stars">★★★★★</span><span class="rv">4.6</span><span class="rc">· 2,000+ learners</span></div>
+        <div class="access-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>1 Year Full Access</div>
+        <div class="feats">
+          <div class="f"><div class="fd"></div>15+ hrs video</div>
+          <div class="f"><div class="fd"></div>Hands-on projects</div>
+          <div class="f"><div class="fd"></div>Datasets included</div>
+          <div class="f"><div class="fd"></div>Certificate</div>
+          <div class="f"><div class="fd"></div>Beginner → Advanced</div>
+          <div class="f"><div class="fd"></div>Updated 2026</div>
+        </div>
+        <a href="#" class="enroll">Start Learning Now <span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <div class="card reveal d2">
+      <div class="ch ch2">
+        <div class="ch-pattern"></div><div class="ch-glow"></div>
+        <div class="ch-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="3" y="19" width="6" height="10" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+            <rect x="13" y="13" width="6" height="16" rx="1.5" fill="rgba(255,255,255,0.65)"/>
+            <rect x="23" y="6" width="6" height="23" rx="1.5" fill="rgba(255,255,255,0.85)"/>
+            <polyline points="6,17 16,11 26,4" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none" stroke-dasharray="2.5,2.5"/>
+          </svg>
+        </div>
+        <span class="ch-badge">Popular</span>
+      </div>
+      <div class="cb">
+        <div class="ctags"><span class="ctag">KPIs</span><span class="ctag">Forecasting</span><span class="ctag">Power BI</span><span class="ctag">Strategy</span></div>
+        <h3 class="c-title">Business Analytics & Decision Making</h3>
+        <p class="c-desc">Bridge data and business strategy. Learn KPI dashboards, forecasting, and data-driven decisions through real company case studies.</p>
+        <div class="c-rating"><span class="stars">★★★★½</span><span class="rv">4.5</span><span class="rc">· 5,000+ learners</span></div>
+        <div class="access-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>1 Year Full Access</div>
+        <div class="feats">
+          <div class="f"><div class="fd"></div>12+ hrs video</div>
+          <div class="f"><div class="fd"></div>Case studies</div>
+          <div class="f"><div class="fd"></div>Templates & reports</div>
+          <div class="f"><div class="fd"></div>Certificate</div>
+          <div class="f"><div class="fd"></div>Industry-focused</div>
+          <div class="f"><div class="fd"></div>Updated 2026</div>
+        </div>
+        <a href="#" class="enroll">Start Learning Now <span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <div class="card reveal d3">
+      <div class="ch ch3">
+        <div class="ch-pattern"></div><div class="ch-glow"></div>
+        <div class="ch-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="14" r="9.5" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <circle cx="16" cy="14" r="5.5" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+            <circle cx="16" cy="14" r="2.5" fill="rgba(255,255,255,0.9)"/>
+            <line x1="16" y1="4.5" x2="16" y2="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="16" y1="26.5" x2="16" y2="29.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5.5" y1="14" x2="2.5" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="29.5" y1="14" x2="26.5" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ch-badge">Top Rated</span>
+      </div>
+      <div class="cb">
+        <div class="ctags"><span class="ctag">Python</span><span class="ctag">ML</span><span class="ctag">AI</span><span class="ctag">Deep Learning</span></div>
+        <h3 class="c-title">Data Science & AI Master Program</h3>
+        <p class="c-desc">Build intelligent systems with Python, machine learning, and end-to-end AI projects. Step into the future of technology.</p>
+        <div class="c-rating"><span class="stars">★★★★★</span><span class="rv">4.7</span><span class="rc">· 6,000+ learners</span></div>
+        <div class="access-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>1 Year Full Access</div>
+        <div class="feats">
+          <div class="f"><div class="fd"></div>20+ hrs video</div>
+          <div class="f"><div class="fd"></div>Real AI projects</div>
+          <div class="f"><div class="fd"></div>Code files included</div>
+          <div class="f"><div class="fd"></div>Certificate</div>
+          <div class="f"><div class="fd"></div>AI & ML focused</div>
+          <div class="f"><div class="fd"></div>Updated 2026</div>
+        </div>
+        <a href="#" class="enroll">Start Learning Now <span class="arr">→</span></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CURRICULUM -->
+<div id="learn" class="learn-wrap">
+  <div class="learn-grid">
+    <div class="lc reveal">
+      <span class="l-eye">Data Analytics</span>
+      <h3>What You'll Learn</h3>
+      <p>A complete toolkit from raw files to powerful dashboards.</p>
+      <ul class="ll">
+        <li>Data cleaning and transformation</li>
+        <li>Excel for data analysis</li>
+        <li>SQL for data querying</li>
+        <li>Python for analytics</li>
+        <li>Power BI &amp; Tableau visualization</li>
+        <li>Real-world business insights</li>
+      </ul>
+    </div>
+    <div class="lc reveal d1">
+      <span class="l-eye">Business Analytics</span>
+      <h3>What You'll Learn</h3>
+      <p>Apply data thinking to real business strategy and performance.</p>
+      <ul class="ll">
+        <li>Business data interpretation</li>
+        <li>KPI tracking and dashboards</li>
+        <li>Forecasting and trend analysis</li>
+        <li>Data-driven decision making</li>
+        <li>Excel and Power BI for business</li>
+        <li>Real company case studies</li>
+      </ul>
+    </div>
+    <div class="lc reveal d2">
+      <span class="l-eye">Data Science & AI</span>
+      <h3>What You'll Learn</h3>
+      <p>Build predictive models and intelligent systems for the AI era.</p>
+      <ul class="ll">
+        <li>Python for data science</li>
+        <li>Machine learning algorithms</li>
+        <li>Data preprocessing techniques</li>
+        <li>Model building and evaluation</li>
+        <li>AI concepts and applications</li>
+        <li>End-to-end AI projects</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIENCE -->
+<div id="audience" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-eye">Who It's For</span>
+    <h2>Built for Every Learner</h2>
+    <p>Whether you're just starting out or moving up — there's a program made for you.</p>
+    <div class="liner"></div>
+  </div>
+  <div class="aud-grid">
+    <div class="ac reveal d1">
+      <div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="1.8"><circle cx="12" cy="7" r="4"/><path d="M2 21a10 10 0 0 1 20 0"/></svg></div>
+      <h4>Beginners</h4><p>No experience needed. Build real, job-ready skills from the ground up.</p>
+    </div>
+    <div class="ac reveal d2">
+      <div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="1.8"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+      <h4>Students</h4><p>Build a strong portfolio and land your first data role before graduation.</p>
+    </div>
+    <div class="ac reveal d3">
+      <div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <h4>Professionals</h4><p>Upskill and transition into data-driven roles at any career stage.</p>
+    </div>
+    <div class="ac reveal d3">
+      <div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2185B" stroke-width="1.8"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg></div>
+      <h4>Entrepreneurs</h4><p>Use data to grow your business and make smarter, faster decisions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-in">
+    <h2>Ready to Master Data?</h2>
+    <p>Join 13,000+ learners who've transformed their careers with Asquare Technologies — 1 full year of access included.</p>
+    <div class="cpills">
+      <div class="cp"><div class="cpd"></div>1 Year Full Access</div>
+      <div class="cp"><div class="cpd"></div>Certificate Included</div>
+      <div class="cp"><div class="cpd"></div>Real-world Projects</div>
+      <div class="cp"><div class="cpd"></div>Expert Instructors</div>
+    </div>
+    <a href="#courses" class="btn-w">Browse All Programs</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div>
+      <div class="fb">Asquare Technologies</div>
+      <div class="fc">© 2026 Asquare Technologies. All rights reserved.</div>
+    </div>
+    <div class="fl">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Loader
+window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').classList.add('hide');},1700);});
+
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.transform=`translate(${mx-5}px,${my-5}px)`;
+});
+(function animR(){rx+=(mx-rx)*0.11;ry+=(my-ry)*0.11;ring.style.transform=`translate(${rx-19}px,${ry-19}px)`;requestAnimationFrame(animR);})();
+document.querySelectorAll('a,button,.card,.ac').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform+=' scale(2.5)';ring.style.opacity='0.15';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform=cur.style.transform.replace(' scale(2.5)','');ring.style.opacity='0.5';});
+});
+
+// Nav scroll
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);});
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
